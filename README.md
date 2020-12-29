@@ -1,0 +1,2 @@
+# SpoodefyBot
+The Bot
