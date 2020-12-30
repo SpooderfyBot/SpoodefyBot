@@ -1,12 +1,10 @@
 import time
 import logging
-import traceback
 import typing as t
 import threading
 import multiprocessing as mp
 
 from datetime import datetime
-from functools import partial
 
 
 def get_chunk(cluster_no: int, shard_count: int):
@@ -100,7 +98,7 @@ class BotScaler:
         self.total_shards = self.num_workers * self.num_workers
 
         self._loader = get_bot
-        self._temp_cb = self._loader()
+        self._temp_cb = self._loader(restart=False)
 
         self._bot_kwargs = bot_kwargs
         self._exception_count = 0
@@ -162,12 +160,12 @@ class BotScaler:
             )
 
     def restart(self):
-        self._temp_cb = self._loader()
+        self._temp_cb = self._loader(restart=True)
         self.shutdown()
         self.start()
 
     def rolling_restart(self, *, delay=2):
-        self._temp_cb = self._loader()
+        self._temp_cb = self._loader(restart=True)
         for cluster, worker in self._workers.items():
             now = datetime.now()
             print(

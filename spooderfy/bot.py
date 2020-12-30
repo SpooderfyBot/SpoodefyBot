@@ -48,14 +48,14 @@ def run(
     prefix: str,
     **kwargs,
 ):
-    # Install custom loop if installed
-    loop.install()
-
     # Set logger cluster no
-    Logger.set_cluster(cluster_no)
+    Logger.CLUSTER_ID = cluster_no
 
     # Determines if we need to use sharded readies
     Spooderfy.PRODUCTION = kwargs.pop("production")
+
+    # Install custom loop if installed
+    loop.install()
 
     intents = Intents.default()
     intents.members = False
