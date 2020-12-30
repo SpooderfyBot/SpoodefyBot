@@ -1,7 +1,5 @@
-from .setup.logger import Logger
-from .setup import loop
+from .setup import Logger, log, loop
 
 loop.install()
-log = Logger.log
 
 from .bot import Spooderfy, run

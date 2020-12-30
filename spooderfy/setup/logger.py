@@ -11,4 +11,4 @@ class Logger:
     @classmethod
     def log(cls, *args):
         now = datetime.now()
-        print(f"[ {now.strftime('%I:%M %p | %d %b')} ][ CLUSTER {cls.CLUSTER_ID:2d}  ]", *args)
+        print(f"[ {now.strftime('%H:%M:%S | %d %b')} ][ CLUSTER {cls.CLUSTER_ID:2d}  ]", *args)

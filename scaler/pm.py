@@ -116,6 +116,12 @@ class BotScaler:
             time.sleep(5)
 
     def start_worker(self, cluster, shards):
+        now = datetime.now()
+        print(
+            f"[ {now.strftime('%H:%M:%S | %d %b')} ][ WORKER ]"
+            f" Starting cluster: {cluster}"
+        )
+
         worker = Worker(
             self._temp_cb,
             token=self._token,
@@ -129,33 +135,29 @@ class BotScaler:
 
         self._workers[cluster] = worker
 
-        now = datetime.now()
-        print(
-            f"[ {now.strftime('%I:%M %p | %d %b')} ][ WORKER ]"
-            f" Started cluster: {cluster}")
-
     def on_worker_end(self, worker: Worker):
         now = datetime.now()
         print(
-            f"[ {now.strftime('%I:%M %p | %d %b')} ][ WORKER ]"
+            f"[ {now.strftime('%H:%M:%S | %d %b')} ][ WORKER ]"
             f" Cluster completed: {worker.cluster}")
 
         if not self._check_workers:
             return
 
-        worker.start()
         now = datetime.now()
         print(
-            f"[ {now.strftime('%I:%M %p | %d %b')} ][ WORKER ]"
-            f" Restarted cluster: {worker.cluster}"
+            f"[ {now.strftime('%H:%M:%S | %d %b')} ][ WORKER ]"
+            f" Restarting cluster: {worker.cluster}"
         )
+
+        worker.start()
 
     def shutdown(self):
         for worker in self._workers.values():
             worker.shutdown()
             now = datetime.now()
             print(
-                f"[ {now.strftime('%I:%M %p | %d %b')} ][ WORKER ]"
+                f"[ {now.strftime('%H:%M:%S | %d %b')} ][ WORKER ]"
                 f" Terminated cluster: {worker.cluster}"
             )
 
@@ -167,5 +169,10 @@ class BotScaler:
     def rolling_restart(self, *, delay=2):
         self._temp_cb = self._loader()
         for cluster, worker in self._workers.items():
+            now = datetime.now()
+            print(
+                f"[ {now.strftime('%H:%M:%S | %d %b')} ][ WORKER ]"
+                f" Restarting cluster: {worker.cluster}"
+            )
             worker.restart(self._temp_cb)
             time.sleep(delay)
