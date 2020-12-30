@@ -32,3 +32,4 @@ if __name__ == '__main__':
 
     runner.start()
     runner.rolling_restart()
+    runner.wait_until_finished()

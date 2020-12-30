@@ -52,6 +52,17 @@ class Worker:
                 raise RuntimeError("Child raised exception to many times")
             self._cb(self)
 
+    def wait(self):
+        running = True
+        while running:
+            try:
+                running = self._process.is_alive()
+                if self.__terminate_watcher:
+                    return
+            except ValueError:  # process died and we rechecked
+                pass
+            time.sleep(1)
+
     def start(self):
         self._process = mp.Process(
             target=self._caller,
@@ -174,3 +185,7 @@ class BotScaler:
             )
             worker.restart(self._temp_cb)
             time.sleep(delay)
+
+    def wait_until_finished(self):
+        for worker in self._workers.values():
+            worker.wait()
