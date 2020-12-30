@@ -1,7 +1,7 @@
 from discord.ext import commands
 from discord import Intents
 
-from . import log, Logger
+from . import log, Logger, loop
 
 
 def watch_shutdown(shutdown):
@@ -48,7 +48,13 @@ def run(
     prefix: str,
     **kwargs,
 ):
+    # Install custom loop if installed
+    loop.install()
+
+    # Set logger cluster no
     Logger.set_cluster(cluster_no)
+
+    # Determines if we need to use sharded readies
     Spooderfy.PRODUCTION = kwargs.pop("production")
 
     intents = Intents.default()
