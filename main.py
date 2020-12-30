@@ -1,3 +1,4 @@
+from os import getenv
 from importlib import import_module
 
 from scaler import BotScaler
@@ -22,4 +23,4 @@ runner = BotScaler(
 )
 
 if __name__ == '__main__':
-    runner.start()
+    runner.start(str(getenv("BOT_TOKEN")))
