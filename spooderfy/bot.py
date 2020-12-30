@@ -4,6 +4,11 @@ from discord import Intents
 from . import log, Logger
 
 
+def watch_shutdown(shutdown):
+    """ This will return when teh master process signals for us to shutdown """
+    shutdown.get()
+
+
 class Spooderfy(commands.AutoShardedBot):
     PRODUCTION = False
 
@@ -21,9 +26,13 @@ class Spooderfy(commands.AutoShardedBot):
 
         super().__init__("", **options)
 
+    async def watch_shutdown(self, shutdown):
+        await self.loop.run_in_executor(None, watch_shutdown, shutdown)
+        await self.logout()
+
     async def on_ready(self):
         """ This is only called if in PRODUCTION = False """
-        log("Development bot online! ")
+        log("Development bot online!")
 
     async def on_shard_ready(self, shard_id):
         """ This is only called if in PRODUCTION = True """
@@ -31,6 +40,7 @@ class Spooderfy(commands.AutoShardedBot):
 
 
 def run(
+    shutdown,
     token: str,
     shards: tuple,
     total_shards: int,
@@ -59,5 +69,5 @@ def run(
         intents=intents,
         **kwargs,
     )
-
+    bot.loop.create_task(bot.watch_shutdown(shutdown))
     bot.run(token)

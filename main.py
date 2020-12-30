@@ -16,6 +16,7 @@ def get_bot():
 
 runner = BotScaler(
     get_bot=get_bot,
+    bot_token=str(getenv("BOT_TOKEN")),
     num_workers=1,
     num_shards=1,
     prefix="sp!",
@@ -23,4 +24,5 @@ runner = BotScaler(
 )
 
 if __name__ == '__main__':
-    runner.start(str(getenv("BOT_TOKEN")))
+    runner.start()
+    runner.rolling_restart()
