@@ -1,7 +1,9 @@
-from discord.ext import commands
-from discord import Intents
+import discord
 
-from . import log, Logger, loop
+from discord.ext import commands
+
+from . import log
+from . import error_handler as eh
 
 
 def watch_shutdown(shutdown):
@@ -38,42 +40,17 @@ class Spooderfy(commands.AutoShardedBot):
         """ This is only called if in PRODUCTION = True """
         log(f"Production shard {shard_id} has connected!")
 
+    async def on_command_error(self, ctx: commands.Context, exception):
+        exception = getattr(exception, "original", exception)
 
-def run(
-    shutdown,
-    token: str,
-    shards: tuple,
-    total_shards: int,
-    cluster_no: int,
-    prefix: str,
-    **kwargs,
-):
-    # Set logger cluster no
-    Logger.CLUSTER_ID = cluster_no
+        if isinstance(exception, commands.CommandNotFound):
+            return
 
-    # Determines if we need to use sharded readies
-    Spooderfy.PRODUCTION = kwargs.pop("production")
+        elif isinstance(exception, (discord.Forbidden, commands.BotMissingPermissions)):
+            return await eh.missing_permissions(ctx)
 
-    # Install custom loop if installed
-    loop.install()
 
-    intents = Intents.default()
-    intents.members = False
-    intents.emojis = False
-    intents.integrations = False
-    intents.webhooks = False
-    intents.invites = False
-    intents.voice_states = False
-    intents.presences = False
-    intents.typing = False
-    intents.reactions = True
 
-    bot = Spooderfy(
-        prefix,
-        shard_ids=list(shards),
-        shard_count=total_shards,
-        intents=intents,
-        **kwargs,
-    )
-    bot.loop.create_task(bot.watch_shutdown(shutdown))
-    bot.run(token)
+
+
+
