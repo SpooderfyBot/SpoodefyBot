@@ -1,11 +1,14 @@
 import discord
 import os
+import re
+import typing as t
 
 from traceback import print_exc
 from discord.ext import commands
 
 from . import log
 from . import error_handler as eh
+from .custom import prefix
 
 
 def watch_shutdown(shutdown):
@@ -27,6 +30,12 @@ class Spooderfy(commands.AutoShardedBot):
 
     def __init__(self, command_prefix, **options):
         self.prefix = command_prefix
+        self.mentions: t.Optional[set] = None
+
+        self.colour = 0x0DEDE8
+        self.site_url = "https://spooderfy.com"
+
+        self._ready_once = False
 
         super().__init__("", **options)
 
@@ -56,9 +65,36 @@ class Spooderfy(commands.AutoShardedBot):
         """ This is only called if in PRODUCTION = False """
         log("Development bot online!")
 
+        if not self._ready_once:
+            await self.on_ready_once()
+            self._ready_once = True
+
     async def on_shard_ready(self, shard_id):
         """ This is only called if in PRODUCTION = True """
         log(f"Production shard {shard_id} has connected!")
+
+        if not self._ready_once:
+            await self.on_ready_once()
+            self._ready_once = True
+
+    async def on_ready_once(self):
+        self.mentions = prefix.get_mentions(self.user.id)
+
+    async def get_prefix(self, message):
+        return (await prefix.acquire_prefix(message.guild)) or self.prefix
+
+    async def on_message(self, message):
+        if message.author.bot or not self.is_ready():
+            return
+
+        if message.content in self.mentions:
+            prefix_ = (await prefix.acquire_prefix(message.guild)) or self.prefix
+            return await message.reply(
+                "<:spooderfy:773609763015360582> "
+                f"**My prefix is `{prefix_}`**"
+            )
+
+        await self.process_commands(message)
 
     async def on_command_error(self, ctx: commands.Context, exception):
         exception = getattr(exception, "original", exception)
@@ -68,6 +104,8 @@ class Spooderfy(commands.AutoShardedBot):
 
         elif isinstance(exception, (discord.Forbidden, commands.BotMissingPermissions)):
             return await eh.missing_permissions(ctx)
+
+        raise exception
 
 
 
