@@ -1,5 +1,7 @@
 import discord
+import os
 
+from traceback import print_exc
 from discord.ext import commands
 
 from . import log
@@ -27,6 +29,24 @@ class Spooderfy(commands.AutoShardedBot):
         self.prefix = command_prefix
 
         super().__init__("", **options)
+
+        self.remove_command("help")
+        self._load_all_extensions()
+
+    def _load_all_extensions(self):
+        for file in os.listdir("./spooderfy/cogs"):
+            if file.endswith(".py") and not file.startswith("__"):
+                self._load_ext(file[:-3])
+
+    def _load_ext(self, file):
+        try:
+            self.load_extension(f"spooderfy.cogs.{file}")
+            log(f"[ EXTENSION LOADED ] {file}")
+        except commands.ExtensionFailed:
+            print_exc()
+            log(f"[ EXTENSION ERROR ] Extension {file} could not be loaded.")
+        except commands.ExtensionNotFound:
+            log(f"[ EXTENSION ERROR ] Extension {file} is not found.")
 
     async def watch_shutdown(self, shutdown):
         await self.loop.run_in_executor(None, watch_shutdown, shutdown)

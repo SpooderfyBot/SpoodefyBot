@@ -48,6 +48,7 @@ class Worker:
             pass
 
         if self._cb is not None and not self.__terminate_watcher:
+            self.__exec_limit += 1
             if self.__exec_limit >= 3:
                 raise RuntimeError("Child raised exception to many times")
             self._cb(self)

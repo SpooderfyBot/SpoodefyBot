@@ -14,4 +14,3 @@
 `{prefix}stats <user>` **: -** Get your (if user is blank) or get the user's video stats
 `{prefix}balance` **: -** Get your current balance of coins.
 `{prefix}gift <user> <amount>` **: -** Gift a user an amount of your coins.
-

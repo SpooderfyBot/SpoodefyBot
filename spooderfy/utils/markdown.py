@@ -11,6 +11,8 @@ def load_md(file) -> str:
 def get_help(file) -> dict:
     out = {}
     for line in load_md(file).split("### "):
+        if line == '':
+            continue
         title, desc = line.split("\n", maxsplit=1)
         out[title] = desc
 
