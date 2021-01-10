@@ -14,7 +14,7 @@ class GeneralCommands(commands.Cog):
     def __init__(self, bot: Spooderfy):
         self.bot = bot
 
-    @commands.group(aliases=["h"])
+    @commands.command(aliases=["h"])
     async def help(self, ctx: commands.Context):
 
         embed = discord.Embed(colour=self.bot.colour)
@@ -38,7 +38,8 @@ class GeneralCommands(commands.Cog):
 
         await ctx.reply(embed=embed)
 
-    @commands.group()
+
+    @commands.command()
     async def ping(self, ctx: commands.Context):
         avg = self.bot.latency * 1000
         shard = self.bot.get_shard(ctx.guild.shard_id).latency * 1000
