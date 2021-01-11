@@ -102,9 +102,6 @@ class Spooderfy(commands.AutoShardedBot):
         if isinstance(exception, commands.CommandNotFound):
             return
 
-        elif isinstance(exception, (discord.Forbidden, commands.BotMissingPermissions)):
-            return await eh.missing_permissions(ctx)
-
         raise exception
 
 
