@@ -31,7 +31,7 @@ class RoomCreator(BaseRequester):
 
         if resp != 200:
             raise HttpException(
-                "Operation 'play' did not respond with 200 code.")
+                "Operation 'create_room' did not respond with 200 code.")
 
         return Room(
             room_id=room_id,
@@ -61,7 +61,7 @@ class Room(BaseInteraction):
 
         if resp != 200:
             raise HttpException(
-                "Operation 'play' did not respond with 200 code.")
+                "Operation 'delete' did not respond with 200 code.")
 
     def __repr__(self):
         return f"Room(id={self.room_id})"
