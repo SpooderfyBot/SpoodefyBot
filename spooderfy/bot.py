@@ -37,6 +37,8 @@ class Spooderfy(commands.AutoShardedBot):
 
         self._ready_once = False
 
+        self.room = {}
+
         super().__init__("", **options)
 
         self.remove_command("help")
