@@ -32,5 +32,5 @@ class Requester:
             endpoint: str,
             json: Optional[dict] = None
     ) -> ClientResponse:
-        return await self._session.request(method.value, endpoint, json=json)
+        return await self._session.request(method.value, BASE_URL + endpoint, json=json)
 

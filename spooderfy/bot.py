@@ -97,6 +97,9 @@ class Spooderfy(commands.AutoShardedBot):
         await self.process_commands(message)
 
     async def on_command_error(self, ctx: commands.Context, exception):
+        if getattr(ctx, 'handled', False):
+            return
+
         exception = getattr(exception, "original", exception)
 
         if isinstance(exception, commands.CommandNotFound):

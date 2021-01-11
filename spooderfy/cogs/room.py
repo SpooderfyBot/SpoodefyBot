@@ -21,8 +21,8 @@ class GeneralCommands(commands.Cog):
                 "This is a temporary limit and will be removed later."
             )
 
-        new = await ctx.channel.clone(name=f"Movie: {name}")
-        buffer = await self.bot.user.avatar.read()
+        new = await ctx.channel.clone(name=f"movie-{name}")
+        buffer = await self.bot.user.avatar_url_as().read()
         wh = await new.create_webhook(
             name="Spooderfy Interaction",
             avatar=buffer
@@ -32,17 +32,16 @@ class GeneralCommands(commands.Cog):
         return await ctx.reply(f"🎉 Made room: `{room.id}`")
 
     @create_room.error
-    async def create_room_error(self, ctx, exception: Exception):
-        exception = getattr(exception, 'original', exception)
-        if isinstance(exception, commands.MissingRequiredArgument):
-            return await ctx.reply(
-                f"**Oops! {exception}**"
-            )
-        elif isinstance(exception, commands.NoPrivateMessage):
+    async def create_room_error(self, ctx, exception):
+        current = getattr(exception, 'original', exception)
+        if isinstance(current, commands.MissingRequiredArgument):
+            return await ctx.reply(f"**Oops! {exception}**")
+        elif isinstance(current, commands.NoPrivateMessage):
             return await ctx.reply(
                 f"**Oops! Sorry but I dont support movies in DMs**")
 
-        elif isinstance(exception, discord.Forbidden):
+        elif isinstance(current, discord.Forbidden):
+            ctx.handled = True
             return await ctx.reply(
                 f"**Oops! Sorry but I dont have permission todo this.\n"
                 f"Make sure I have permission to `MANAGE CHANNELS` "
