@@ -32,14 +32,14 @@ class GeneralCommands(commands.Cog):
 
     @create_room.error
     async def create_room_error(self, ctx, exception):
-        current = getattr(exception, 'original', exception)
-        if isinstance(current, commands.MissingRequiredArgument):
+        exception = getattr(exception, 'original', exception)
+        if isinstance(exception, commands.MissingRequiredArgument):
             return await ctx.reply(f"**Oops! {exception}**")
-        elif isinstance(current, commands.NoPrivateMessage):
+        elif isinstance(exception, commands.NoPrivateMessage):
             return await ctx.reply(
                 f"**Oops! Sorry but I dont support movies in DMs**")
 
-        elif isinstance(current, discord.Forbidden):
+        elif isinstance(exception, discord.Forbidden):
             ctx.handled = True
             return await ctx.reply(
                 f"**Oops! Sorry but I dont have permission todo this.\n"
@@ -62,9 +62,16 @@ class GeneralCommands(commands.Cog):
 
     @delete_room.error
     async def delete_room_error(self, ctx, exception: Exception):
+        exception = getattr(exception, 'original', exception)
         if isinstance(exception, commands.NoPrivateMessage):
             return await ctx.reply(
                 f"**Oops! Sorry but I dont support movies in DMs**")
+        elif isinstance(exception, discord.Forbidden):
+            ctx.handled = True
+            return await ctx.reply(
+                f"**Oops! Sorry but I dont have permission todo this.\n"
+                f"Make sure I have permission to `MANAGE CHANNELS` "
+                f"and `MANAGE WEBHOOKS`**")
         raise exception
 
 
