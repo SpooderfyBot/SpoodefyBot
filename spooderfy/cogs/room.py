@@ -1,5 +1,4 @@
 import discord
-from typing import Dict, Optional
 from discord.ext import commands
 
 from .. import Spooderfy

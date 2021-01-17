@@ -54,11 +54,11 @@ class Room(BaseInteraction):
     async def delete(self):
         await self.channel.delete()
 
-        url = f"{BASE_EXTENSION}/{self.room_id}/create"
+        url = f"{BASE_EXTENSION}/{self.room_id}/delete"
 
         resp = await self.request(Methods.DEL, url)
 
-        if resp != 200:
+        if resp.status != 200:
             raise HttpException(
                 "Operation 'delete' did not respond with 200 code.")
 

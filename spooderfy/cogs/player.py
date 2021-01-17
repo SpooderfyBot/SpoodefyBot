@@ -29,7 +29,7 @@ class PlayerCommands(commands.Cog):
         track = spooderfy_api.Track(url=url, title=title or "No Title")
         await room.player.add_track(track)
         await ctx.reply(
-            f"**Added track [{track.title}]({track.url}) to the queue "
+            f"Added track **[**{track.title}**]({track.url}) **to the queue "
             f"do `{ctx.prefix}next` to cycle the queue.**"
         )
 
