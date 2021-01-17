@@ -16,9 +16,9 @@ class RoomCreator(BaseRequester):
         super().__init__(requester)
 
     async def create_room(
-            self,
-            webhook: str,
-            channel: discord.TextChannel,
+        self,
+        webhook: str,
+        channel: discord.TextChannel,
     ) -> "Room":
         payload = {
             "webhook": webhook
@@ -28,8 +28,7 @@ class RoomCreator(BaseRequester):
         url = f"{BASE_EXTENSION}/{room_id}/create"
 
         resp = await self.request(Methods.POST, url, json=payload)
-
-        if resp != 200:
+        if resp.status != 200:
             raise HttpException(
                 "Operation 'create_room' did not respond with 200 code.")
 
@@ -42,10 +41,10 @@ class RoomCreator(BaseRequester):
 
 class Room(BaseInteraction):
     def __init__(
-            self,
-            room_id: str,
-            channel: discord.TextChannel,
-            requester: Requester,
+        self,
+        room_id: str,
+        channel: discord.TextChannel,
+        requester: Requester,
     ):
         super().__init__(room_id, requester)
 
