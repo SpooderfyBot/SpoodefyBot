@@ -6,7 +6,7 @@ from .. import Spooderfy
 from .. import spooderfy_api
 
 
-class GeneralCommands(commands.Cog):
+class RoomCommands(commands.Cog):
     def __init__(self, bot: Spooderfy):
         self.bot = bot
         self.creator = spooderfy_api.RoomCreator(self.bot.loop)
@@ -76,4 +76,4 @@ class GeneralCommands(commands.Cog):
 
 
 def setup(bot: Spooderfy):
-    bot.add_cog(GeneralCommands(bot))
+    bot.add_cog(RoomCommands(bot))

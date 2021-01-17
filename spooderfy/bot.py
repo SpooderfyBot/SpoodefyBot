@@ -7,8 +7,8 @@ from traceback import print_exc
 from discord.ext import commands
 
 from . import log
-from . import error_handler as eh
 from .custom import prefix
+from .spooderfy_api import Room
 
 
 def watch_shutdown(shutdown):
@@ -37,7 +37,7 @@ class Spooderfy(commands.AutoShardedBot):
 
         self._ready_once = False
 
-        self.room = {}
+        self.room: t.Dict[int, Room] = {}
 
         super().__init__("", **options)
 

@@ -1,4 +1,4 @@
-
+import os
 from asyncio import AbstractEventLoop, get_event_loop
 from enum import Enum
 from typing import Optional
@@ -7,6 +7,9 @@ from aiohttp import ClientSession, ClientResponse
 
 
 BASE_URL = "https://spooderfy.com/api"
+
+
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 
 class Methods(Enum):
@@ -32,5 +35,11 @@ class Requester:
             endpoint: str,
             json: Optional[dict] = None
     ) -> ClientResponse:
-        return await self._session.request(method.value, BASE_URL + endpoint, json=json)
+        cookies = {'session': f'{SECRET_KEY}'}
+        return await self._session.request(
+            method.value,
+            BASE_URL + endpoint,
+            json=json,
+            cookies=cookies
+        )
 
