@@ -1,5 +1,5 @@
 import discord
-from typing import Dict, Optional
+from typing import Optional
 from discord.ext import commands
 
 from .. import Spooderfy
@@ -11,9 +11,9 @@ class PlayerCommands(commands.Cog):
         self.bot = bot
         self.creator = spooderfy_api.RoomCreator(self.bot.loop)
 
-    @commands.command(name="addvideo", aliases=["at"])
+    @commands.command(name="addtrack", aliases=["at"])
     @commands.guild_only()
-    async def add_video(
+    async def add_track(
         self,
         ctx: commands.Context,
         url: str,
@@ -27,11 +27,25 @@ class PlayerCommands(commands.Cog):
             )
 
         track = spooderfy_api.Track(url=url, title=title or "No Title")
-        await room.player.add_video(track)
-        await ctx.reply(
-            f"Added track **[**{track.title}**]({track.url}) **to the queue "
-            f"do `{ctx.prefix}next` to cycle the queue.**"
+        await room.player.add_track(track)
+
+        embed = discord.Embed(colour=self.bot.colour)
+        embed.set_author(
+            name=f"Added video: {track.title}!",
+            icon_url=self.bot.white_icon,
+            url=track.url
         )
+        await ctx.reply(embed=embed)
+
+    @add_track.error
+    async def remove_error(self, ctx, exception):
+        exception = getattr(exception, 'original', exception)
+        if isinstance(exception, commands.MissingRequiredArgument):
+            return await ctx.reply(
+                "**Oops! You haven't given me a url of the video you "
+                "want to add.**"
+            )
+        raise exception
 
     @commands.command(name="next", aliases=["n"])
     @commands.guild_only()
@@ -118,6 +132,7 @@ class PlayerCommands(commands.Cog):
     async def on_cog_error(ctx, exception):
         exception = getattr(exception, 'original', exception)
         if isinstance(exception, commands.NoPrivateMessage):
+            ctx.handled = True
             return await ctx.reply(
                 f"**Oops! Sorry but I dont support movies in DMs**")
         elif isinstance(exception, discord.Forbidden):
@@ -125,6 +140,11 @@ class PlayerCommands(commands.Cog):
             return await ctx.author.send(
                 f"**Oops! Sorry but I dont have permission todo this.\n"
                 f"Make sure I have permission to send messages.")
+        elif isinstance(exception, spooderfy_api.HttpException):
+            ctx.handled = True
+            return await ctx.author.send(
+                f"**Oops! I've ran into an error while running this command, "
+                f"please try again later.")
         raise exception
 
 

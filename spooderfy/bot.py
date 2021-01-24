@@ -34,6 +34,7 @@ class Spooderfy(commands.AutoShardedBot):
 
         self.colour = 0x0DEDE8
         self.site_url = "https://spooderfy.com"
+        self.white_icon = "https://cdn.discordapp.com/emojis/773609763015360582.png?v=1"
 
         self._ready_once = False
 
