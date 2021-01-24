@@ -21,12 +21,39 @@ class RoomCommands(commands.Cog):
 
         new = await ctx.channel.clone(name=f"movie-{name}")
         buffer = await self.bot.user.avatar_url_as().read()
-        wh = await new.create_webhook(
+        wh: discord.Webhook = await new.create_webhook(
             name="Spooderfy Interaction",
             avatar=buffer
         )
         room = await self.creator.create_room(webhook=wh.url, channel=new)
         self.bot.room[ctx.guild.id] = room
+
+        welcome = discord.Embed(
+            title="Welcome to the movie room!",
+            description=f"Some info and commands you might want:",
+            colour=self.bot.colour,
+        )
+        welcome.add_field(
+            name="Room Link",
+            value=f"[Click me to join]({self.bot.site_url}/room/{room.id})",
+            inline=False,
+        )
+        welcome.add_field(
+            name="Useful Commands",
+            value=f"- `{ctx.prefix}addtrack <video url> <video name (optional)>`\n"
+                  f"- `{ctx.prefix}removetrack <video index>`\n"
+                  f"- `{ctx.prefix}next`\n"
+                  f"- `{ctx.prefix}previous`\n"
+                  f"- `{ctx.prefix}play`\n"
+                  f"- `{ctx.prefix}pause`\n"
+        )
+        welcome.set_thumbnail(url=self.bot.user.avatar_url)
+        welcome.set_footer(
+            text=f"{ctx.author} is the owner of this room.",
+            icon_url=ctx.author.avatar_url,
+        )
+        await wh.send(embed=welcome)
+
         return await ctx.reply(f"🎉 Made room: `{room.id}`")
 
     @create_room.error
