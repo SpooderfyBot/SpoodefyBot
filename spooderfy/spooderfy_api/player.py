@@ -36,7 +36,7 @@ class Player(BaseInteraction):
         resp = await self.request(Methods.POST, url, json=track.__dict__)
         if resp.status != 200:
             raise HttpException(
-                "Operation 'add_track' did not respond with 200 code.")
+                "Operation 'add_video' did not respond with 200 code.")
 
     async def remove_track(self, index: int):
         url = f"{self.BASE_EXTENSION}/{self.room_id}/track/remove?index={index}"
