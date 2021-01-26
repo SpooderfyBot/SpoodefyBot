@@ -108,17 +108,19 @@ class RoomCommands(commands.Cog):
         if message.guild is None:
             return
 
-        if message.channel.id not in self.bot.rooms:
+        if message.guild.id not in self.bot.rooms:
             return
 
-        room = self.bot.rooms[message.channel.id]
+        room = self.bot.rooms[message.guild.id]
+        if message.channel.id != room.channel.id:
+            return
+
         msg = spooderfy_api.Message(
             content=message.content,
             user_id=message.author.id,
-            username=message.author.nick,
-            avatar=message.author.avatar_url,
+            username=message.author.display_name,
+            avatar=str(message.author.avatar_url),
         )
-
         await room.send_message_as(msg)
 
 

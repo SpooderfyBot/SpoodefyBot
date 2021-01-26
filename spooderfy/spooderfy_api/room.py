@@ -65,12 +65,13 @@ class Room(BaseInteraction):
 
     async def send_message_as(self, msg: Message):
         url = f"{BASE_EXTENSION}/{self.room_id}/botmsg"
-
         resp = await self.request(Methods.PUT, url, json=msg.__dict__)
 
         if resp.status != 200:
             raise HttpException(
-                "Operation 'delete' did not respond with 200 code.")
+                "Operation 'send msg' did not respond with 200 code: {}",
+                resp
+            )
 
     def __repr__(self):
         return f"Room(id={self.room_id})"
