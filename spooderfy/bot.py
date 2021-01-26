@@ -38,7 +38,7 @@ class Spooderfy(commands.AutoShardedBot):
 
         self._ready_once = False
 
-        self.room: t.Dict[int, Room] = {}
+        self.rooms: t.Dict[int, Room] = {}
 
         super().__init__("", **options)
 

@@ -19,7 +19,7 @@ class PlayerCommands(commands.Cog):
         url: str,
         title: Optional[str] = None,
     ):
-        room = self.bot.room.get(ctx.guild.id, None)
+        room = self.bot.rooms.get(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"
@@ -50,7 +50,7 @@ class PlayerCommands(commands.Cog):
     @commands.command(name="next", aliases=["n"])
     @commands.guild_only()
     async def next(self, ctx: commands.Context):
-        room = self.bot.room.get(ctx.guild.id, None)
+        room = self.bot.rooms.get(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"
@@ -63,7 +63,7 @@ class PlayerCommands(commands.Cog):
     @commands.command(name="previous", aliases=["back"])
     @commands.guild_only()
     async def previous(self, ctx: commands.Context):
-        room = self.bot.room.get(ctx.guild.id, None)
+        room = self.bot.rooms.get(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"
@@ -76,7 +76,7 @@ class PlayerCommands(commands.Cog):
     @commands.command(name="remove", aliases=["rem"])
     @commands.guild_only()
     async def remove(self, ctx: commands.Context, index: int):
-        room = self.bot.room.get(ctx.guild.id, None)
+        room = self.bot.rooms.get(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"
@@ -105,7 +105,7 @@ class PlayerCommands(commands.Cog):
     @commands.command(name="pause")
     @commands.guild_only()
     async def pause(self, ctx: commands.Context):
-        room = self.bot.room.get(ctx.guild.id, None)
+        room = self.bot.rooms.get(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"
@@ -118,7 +118,7 @@ class PlayerCommands(commands.Cog):
     @commands.command(name="play")
     @commands.guild_only()
     async def play(self, ctx: commands.Context):
-        room = self.bot.room.get(ctx.guild.id, None)
+        room = self.bot.rooms.get(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"

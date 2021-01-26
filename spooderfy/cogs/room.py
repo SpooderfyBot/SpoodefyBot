@@ -13,7 +13,7 @@ class RoomCommands(commands.Cog):
     @commands.command(name="createroom")
     @commands.guild_only()
     async def create_room(self, ctx: commands.Context, *, name: str):
-        if self.bot.room.get(ctx.guild.id):
+        if self.bot.rooms.get(ctx.guild.id):
             return await ctx.reply(
                 "Sorry but you already have a room open. "
                 "This is a temporary limit and will be removed later."
@@ -26,7 +26,7 @@ class RoomCommands(commands.Cog):
             avatar=buffer
         )
         room = await self.creator.create_room(webhook=wh.url, channel=new)
-        self.bot.room[ctx.guild.id] = room
+        self.bot.rooms[ctx.guild.id] = room
 
         welcome = discord.Embed(
             title="Welcome to the movie room!",
@@ -76,7 +76,7 @@ class RoomCommands(commands.Cog):
     @commands.command(name="end", aliases=["deleteroom"])
     @commands.guild_only()
     async def delete_room(self, ctx: commands.Context):
-        room = self.bot.room.pop(ctx.guild.id, None)
+        room = self.bot.rooms.pop(ctx.guild.id, None)
         if not room:
             return await ctx.reply(
                 "**Sorry but you don't have a room created.\n"
@@ -99,6 +99,27 @@ class RoomCommands(commands.Cog):
                 f"Make sure I have permission to `MANAGE CHANNELS` "
                 f"and `MANAGE WEBHOOKS`**")
         raise exception
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        if message.author.bot:
+            return
+
+        if message.guild is None:
+            return
+
+        if message.channel.id not in self.bot.rooms:
+            return
+
+        room = self.bot.rooms[message.channel.id]
+        msg = spooderfy_api.Message(
+            content=message.content,
+            user_id=message.author.id,
+            username=message.author.nick,
+            avatar=message.author.avatar_url,
+        )
+
+        await room.send_message_as(msg)
 
 
 def setup(bot: Spooderfy):

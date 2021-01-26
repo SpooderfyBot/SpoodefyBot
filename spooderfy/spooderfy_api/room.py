@@ -1,6 +1,7 @@
 import discord
 
 from .abc import BaseInteraction, BaseRequester
+from .models import Message
 from .request import Requester, Methods
 from .exceptions import HttpException
 from .utils import create_room_id
@@ -57,6 +58,15 @@ class Room(BaseInteraction):
         url = f"{BASE_EXTENSION}/{self.room_id}/delete"
 
         resp = await self.request(Methods.DEL, url)
+
+        if resp.status != 200:
+            raise HttpException(
+                "Operation 'delete' did not respond with 200 code.")
+
+    async def send_message_as(self, msg: Message):
+        url = f"{BASE_EXTENSION}/{self.room_id}/botmsg"
+
+        resp = await self.request(Methods.PUT, url, json=msg.__dict__)
 
         if resp.status != 200:
             raise HttpException(
