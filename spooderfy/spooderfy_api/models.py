@@ -7,3 +7,12 @@ class Track:
     url: str
 
 
+@dataclass()
+class Message:
+    content: str
+    user_id: int
+    username: str
+    avatar: str
+
+
+
