@@ -38,7 +38,7 @@ class PlayerCommands(commands.Cog):
         await ctx.reply(embed=embed)
 
     @add_track.error
-    async def remove_error(self, ctx, exception):
+    async def add_error(self, ctx, exception):
         exception = getattr(exception, 'original', exception)
         if isinstance(exception, commands.MissingRequiredArgument):
             return await ctx.reply(
@@ -58,7 +58,6 @@ class PlayerCommands(commands.Cog):
             )
 
         await room.player.next_track()
-        await ctx.reply("**Skipping to next video.**")
 
     @commands.command(name="previous", aliases=["back"])
     @commands.guild_only()
@@ -71,7 +70,6 @@ class PlayerCommands(commands.Cog):
             )
 
         await room.player.previous_track()
-        await ctx.reply("**Skipping to previous video.**")
 
     @commands.command(name="remove", aliases=["rem"])
     @commands.guild_only()
@@ -84,7 +82,6 @@ class PlayerCommands(commands.Cog):
             )
 
         await room.player.remove_track(index)
-        await ctx.reply("**Removed video.**")
 
     @remove.error
     async def remove_error(self, ctx, exception):

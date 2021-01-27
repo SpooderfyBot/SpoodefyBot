@@ -115,6 +115,11 @@ class RoomCommands(commands.Cog):
         if message.channel.id != room.channel.id:
             return
 
+        prefix = await self.bot.get_prefix(message=message)
+
+        if message.content.startswith(prefix):
+            return
+
         msg = spooderfy_api.Message(
             content=message.content,
             user_id=message.author.id,
