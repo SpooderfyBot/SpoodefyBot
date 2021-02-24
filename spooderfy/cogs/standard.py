@@ -38,7 +38,6 @@ class GeneralCommands(commands.Cog):
 
         await ctx.reply(embed=embed)
 
-
     @commands.command()
     async def ping(self, ctx: commands.Context):
         avg = self.bot.latency * 1000
