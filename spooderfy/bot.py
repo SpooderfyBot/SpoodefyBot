@@ -1,6 +1,5 @@
 import discord
 import os
-import re
 import typing as t
 
 from traceback import print_exc
@@ -8,7 +7,10 @@ from discord.ext import commands
 
 from . import log
 from .custom import prefix
-from .spooderfy_api import Room
+from .utils import load_md
+
+
+PERMISSIONS = load_md("permissions")
 
 
 def watch_shutdown(shutdown):
@@ -17,6 +19,8 @@ def watch_shutdown(shutdown):
 
 
 class Spooderfy(commands.AutoShardedBot):
+    colour = 0x0DEDE8
+
     PRODUCTION = False
 
     def __new__(cls, *args, **kwargs):
@@ -32,13 +36,11 @@ class Spooderfy(commands.AutoShardedBot):
         self.prefix = command_prefix
         self.mentions: t.Optional[set] = None
 
-        self.colour = 0x0DEDE8
         self.site_url = "https://spooderfy.com"
         self.white_icon = "https://cdn.discordapp.com/emojis/773609763015360582.png?v=1"
+        self.rooms: t.Dict[discord.TextChannel, (str, int)] = {}
 
         self._ready_once = False
-
-        self.rooms: t.Dict[int, Room] = {}
 
         super().__init__("", **options)
 
@@ -108,6 +110,12 @@ class Spooderfy(commands.AutoShardedBot):
         if isinstance(exception, commands.CommandNotFound):
             return
 
+        if isinstance(exception, discord.Forbidden):
+            msg = PERMISSIONS.format(action=ctx.command)
+            try:
+                await ctx.send(msg)
+            except discord.Forbidden:
+                return
         raise exception
 
 

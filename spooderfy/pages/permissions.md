@@ -1,5 +1,8 @@
 **Oops! Sorry, I don't have permission to {action}.**\n
 *Make sure I have the following permissions:*\n
+__DIRECT PERMISSIONS__\n
+• `Send you direct messages`\n
+
 __TEXT PERMISSIONS__\n
 • `Send Messages`\n
 • `Attach Files`\n
